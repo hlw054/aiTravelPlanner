@@ -1,6 +1,8 @@
 package com.example.aiTravelPlanner.repository;
 
 import com.example.aiTravelPlanner.model.TravelPlan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +20,7 @@ public interface TravelPlanRepository extends JpaRepository<TravelPlan, Long> {
     
     // 检查用户是否拥有指定的行程表
     boolean existsByIdAndUserId(Long id, Long userId);
+    
+    // 分页查询用户的行程表
+    Page<TravelPlan> findByUserId(Long userId, Pageable pageable);
 }

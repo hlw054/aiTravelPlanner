@@ -5,6 +5,9 @@ import com.example.aiTravelPlanner.model.TravelSchedule;
 import com.example.aiTravelPlanner.repository.TravelPlanRepository;
 import com.example.aiTravelPlanner.repository.TravelScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,6 +114,19 @@ public class TravelPlanService {
     public List<TravelPlan> getTravelPlansByUserId(Long userId) {
         return travelPlanRepository.findByUserId(userId);
     }
+    
+    /**
+     * 分页获取用户的行程计划
+     * @param userId 用户ID
+     * @param page 页码（从1开始）
+     * @param size 每页大小
+     * @return 分页后的行程计划
+     */
+    public Page<TravelPlan> getTravelPlansByUserIdPaged(Long userId, Integer page, Integer size) {
+        // 转换为从0开始的页码
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return travelPlanRepository.findByUserId(userId, pageable);
+    }
 
     /**
      * 根据ID和用户ID获取行程计划
@@ -120,6 +136,22 @@ public class TravelPlanService {
                 .orElseThrow(() -> new RuntimeException("Travel plan not found"));
     }
 
+    /**
+     * 通过行程计划ID获取行程安排列表
+     * @param travelPlanId 行程计划ID
+     * @param userId 用户ID
+     * @return 行程安排列表
+     */
+    public List<TravelSchedule> getTravelSchedulesByPlanId(Long travelPlanId, Long userId) {
+        // 验证行程计划是否存在且属于该用户
+        if (!travelPlanRepository.existsByIdAndUserId(travelPlanId, userId)) {
+            throw new RuntimeException("Travel plan not found or access denied");
+        }
+        
+        // 获取行程安排并按天和开始时间排序
+        return travelScheduleRepository.findByTravelPlanIdOrderByDayAscStartTimeAsc(travelPlanId);
+    }
+    
     /**
      * 删除行程计划（包括相关的行程安排）
      */
