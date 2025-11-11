@@ -333,6 +333,110 @@
   "data": null
 }
 
+### 6. AI生成行程计划接口
+
+#### 接口说明
+调用阿里云百炼模型服务，根据用户的旅游要求生成行程计划，并保存到数据库
+
+#### 请求信息
+- **URL**: `/api/ai/generate-travel-plan`
+- **方法**: `POST`
+- **Headers**: `Authorization: Bearer {token}`（需携带登录时获取的token）
+- **Content-Type**: `application/json`
+
+#### 请求参数
+
+请求体直接传递字符串，包含用户的旅游要求。
+
+#### 请求示例
+
+```
+上海三日游，预算3000元，两人，包含迪士尼乐园和外滩，需要住宿推荐
+```
+
+**注意**：请求体应该是纯文本字符串，不需要JSON格式包装。
+
+#### 响应信息
+
+##### 成功响应
+
+```json
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "travelPlanId": 1,
+    "totalDays": 3,
+    "totalBudget": 3000.00,
+    "totalPeople": 2,
+    "schedulesCount": 10
+  }
+}
+```
+
+##### 失败响应
+
+##### 用户未登录
+```json
+{
+  "code": 401,
+  "msg": "用户未登录",
+  "data": null
+}
+```
+
+##### 参数错误
+```json
+{
+  "code": 400,
+  "msg": "旅游要求不能为空",
+  "data": null
+}
+```
+
+##### AI生成失败
+```json
+{
+  "code": 500,
+  "msg": "生成行程计划失败：无法连接到AI服务",
+  "data": null
+}
+```
+
+### 7. AI API连接测试接口
+
+#### 接口说明
+测试AI行程计划API的连接性
+
+#### 请求信息
+- **URL**: `/api/ai/test`
+- **方法**: `GET`
+- **Headers**: `Authorization: Bearer {token}`（需携带登录时获取的token）
+
+#### 请求参数
+无
+
+#### 响应信息
+
+##### 成功响应
+
+```json
+{
+  "code": 0,
+  "msg": "success",
+  "data": "AI行程计划API连接正常"
+}
+```
+
+##### 失败响应
+
+```json
+{
+  "code": 500,
+  "msg": "API连接失败：连接超时",
+  "data": null
+}
+
 ### UserRegistrationRequest
 
 ```json
