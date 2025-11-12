@@ -1,5 +1,11 @@
 HELP.md
-target/
+# 忽略target目录中的大部分内容
+target/*
+# 但保留jar文件
+!target/*.jar
+# 保留jar包目录
+!target/*.jar.original
+
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
